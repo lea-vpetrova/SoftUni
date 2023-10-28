@@ -4,6 +4,11 @@ function cityInput(city) {
     for (let key of keys) {
         console.log(key, '->', city[key]);
     }
+    /*
+    for(let [prop,value] of Object.entries(city)){
+        console.log(prop, '->' , value);
+    }
+    */
 }
 cityInput({
     name: 'Sofia',
