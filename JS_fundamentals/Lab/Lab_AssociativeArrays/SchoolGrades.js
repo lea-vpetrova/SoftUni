@@ -1,27 +1,24 @@
 function School(input){
-    let map = new Map();
-    let sum = 0, count = 0;
+    let schoolGrades = {};
     for (let record of input) {
         let tokens = record.split(' ');
-        let student = tokens.shift();
+        let studentName = tokens.shift();
         let grades = tokens.map(Number);
-        for (let mark of grades) {
-            sum+=mark;
-            count++;
-            if(!map.has(student)){
-                sum;
-            }
-            else{
-                let curGrade = map.get(student);
-                sum = curGrade += mark;
-            }
+        if (schoolGrades.hasOwnProperty(studentName)) {
+            schoolGrades[studentName] = schoolGrades[studentName].concat(grades);
         }
-        let avgGrade = (sum/count).toFixed(2);
-        map.set(student,avgGrade);
+        else{
+            schoolGrades[studentName] = grades;
+        }
     }
-    for (let kvp of map) {
-        console.log(`${kvp[0]} -> ${kvp[1]}`);
-    }
+    let sortedStudents = Object.keys(schoolGrades).sort();
+    let result = sortedStudents.map(person => {
+                let grades = schoolGrades[person];
+                let averageGrade = (grades.reduce((sum, grade) => sum + grade, 0) / grades.length).toFixed(2);
+                return `${person} : ${averageGrade}`;
+    });
+    
+    console.log(result.join('\n'));
 }
 School(['Lilly 4 6 6 5',
 
