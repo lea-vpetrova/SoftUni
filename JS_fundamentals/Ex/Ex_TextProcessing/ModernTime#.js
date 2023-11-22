@@ -1,13 +1,20 @@
-function modernTimesOfHashtag(str){
-    let hashtag = '#';
-    let text = str.split(' ');
-    for (let word of text) {
-        if (word.includes(hashtag)) {
-            let phrase = word.slice(1);
-            if (phrase.length > 0) {
-                console.log(phrase);
+function modernTimesOfHashtag(text){
+    let words = text.split(' ');
+    let hastWords = words.filter(word => word.startsWith('#') && word.length > 1);
+    
+    for (let word of hastWords) {
+        word = word.slice(1);
+        let isValid = true;
+
+        for (let char of word) {
+            if (!/[A-Za-z]/.test(char)) {
+                isValid = false;
+                break;
             }
-            
+        }
+
+        if (isValid) {
+            console.log(word);
         }
     } 
 }
