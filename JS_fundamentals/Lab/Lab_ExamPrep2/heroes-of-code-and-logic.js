@@ -31,12 +31,7 @@ function heroesOfCodeAndLogicVII(input) {
             //add hp to hero stat
             //print success message
             case 'Heal':
-                let hpToRestore = Number(tokens[2]);
-                if (hero.hp + hpToRestore > 100) {
-                    hpToRestore = 100 - hero.hp;
-                }
-                hero.hp += hpToRestore;
-                console.log(`${ name } healed for ${ hpToRestore } HP!`);
+                Heal(name,hero,tokens);
                 break; 
 
             //# Recharge
@@ -44,12 +39,7 @@ function heroesOfCodeAndLogicVII(input) {
             //add mana to hero stat
             //print success message
             case 'Recharge':
-                let mpToRestore = Number(tokens[2]);
-                if (hero.mp + mpToRestore > 200) {
-                    mpToRestore = 200 - hero.mp;
-                }
-                hero.mp += mpToRestore;
-                console.log(`${name} recharged for ${mpToRestore} MP!`);
+                Recharge(name,hero,tokens);
                 break;
 
             //# CastSpell
@@ -57,14 +47,7 @@ function heroesOfCodeAndLogicVII(input) {
             // - if yes, cast spell, subtract mana and print success message
             // - else, print error message
             case 'CastSpell':
-                let mpNeeded = tokens[2];
-                let spell = tokens[3];
-                if(mpNeeded < hero.mp){
-                    hero.mp -= mpNeeded;
-                    console.log(`${name} has successfully cast ${spell} and now has ${hero.mp} MP!`);
-                }else{
-                    console.log(`${name} does not have enough MP to cast ${spell}!`);
-                }
+                CastSpell(name,hero,tokens)
                 break;
 
             //# TakeDamage
@@ -73,15 +56,7 @@ function heroesOfCodeAndLogicVII(input) {
             // - if yes, print damage message
             // - else, print death message and remove hero from party
             case 'TakeDamage':
-                let damage = tokens[2];
-                let attacker = tokens[3];
-                hero.hp -= damage;
-                if(hero.hp > 0){
-                    console.log(`${name} was hit for ${damage} HP by ${attacker} and now has ${hero.hp} HP left!`);
-                }else{
-                    console.log(`${name} has been killed by ${attacker}!`);
-                    delete party[name];
-                }
+                TakeDamage(name,hero,tokens);
                 break;
         }
     }
@@ -93,6 +68,48 @@ function heroesOfCodeAndLogicVII(input) {
         console.log(name);
         console.log(`   HP: ${hero.hp}`);
         console.log(`   MP: ${hero.mp}`);
+    }
+
+    function Heal(name,hero,tokens) {
+        let hpToRestore = Number(tokens[2]);
+        if (hero.hp + hpToRestore > 100) {
+            hpToRestore = 100 - hero.hp;
+        }
+        hero.hp += hpToRestore;
+        console.log(`${name} healed for ${hpToRestore} HP!`);
+        
+    }
+
+    function Recharge(name,hero,tokens) {
+        let mpToRestore = Number(tokens[2]);
+        if (hero.mp + mpToRestore > 200) {
+            mpToRestore = 200 - hero.mp;
+        }
+        hero.mp += mpToRestore;
+        console.log(`${name} recharged for ${mpToRestore} MP!`);
+    }
+
+    function CastSpell(name,hero,tokens) {
+        let mpNeeded = tokens[2];
+        let spell = tokens[3];
+        if (mpNeeded <= hero.mp) {
+            hero.mp -= mpNeeded;
+            console.log(`${name} has successfully cast ${spell} and now has ${hero.mp} MP!`);
+        } else {
+            console.log(`${name} does not have enough MP to cast ${spell}!`);
+        }
+    }
+
+    function TakeDamage(name,hero,tokens) {
+        let damage = tokens[2];
+        let attacker = tokens[3];
+        hero.hp -= damage;
+        if (hero.hp > 0) {
+            console.log(`${name} was hit for ${damage} HP by ${attacker} and now has ${hero.hp} HP left!`);
+        } else {
+            console.log(`${name} has been killed by ${attacker}!`);
+            delete party[name];
+        }
     }
 }
 heroesOfCodeAndLogicVII(['4', 'Adela 90 150', 'SirMullich 70 40', 'Ivor 1 111', 'Tyris 94 61', 'Heal - SirMullich - 50', 'Recharge - Adela - 100', 'CastSpell - Tyris - 1000 - Fireball', 'TakeDamage - Tyris - 99 - Fireball', 'TakeDamage - Ivor - 3 - Mosquito', 'End']);
