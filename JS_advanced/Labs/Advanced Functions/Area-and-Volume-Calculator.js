@@ -3,8 +3,8 @@ function solve(areaFn, volFn, input) {
     const result =[];
     for (let fig of data) {
         result.push({
-            area: areaFn.call(fig),
-            volum: volFn.call(fig)
+            area: Math.abs(areaFn.call(fig)),
+            volum: Math.abs(volFn.call(fig))
         });
     }
     return result;
