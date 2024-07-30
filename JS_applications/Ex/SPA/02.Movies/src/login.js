@@ -1,28 +1,52 @@
-import { updateNav } from "./app.js";
-import { showHomeView } from "./home.js";
-import { setUserData } from "./userHelper.js";
-import { login } from "./userService.js";
+import { showSection } from "./dom.js";
+import { showHome } from "./app.js";
 
-document.getElementById("form-login").addEventListener('submit', onLogin);
+const sections = document.querySelectorAll(".view-section");
+const loginForm = document.querySelector("#login-form");
 
-export function showLogin(){
-    document.querySelectorAll("section").forEach((section) => (section.style.display = "none"));
-    document.getElementById("form-login").style.display = "block";
+export function showLogin() {
+  showSection(sections[4]);
+  loginForm.addEventListener("submit", loginUser);
 }
 
-async function onLogin(e){
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const email = formData.get("email");
-    const password = formData.get("password");
+async function loginUser(e) {
+  e.preventDefault();
 
-    
-    if (!email || !password ) {
-        return alert("error from login");
+  const formData = new FormData(e.target);
+  const email = formData.get("email");
+  const password = formData.get("password");
+
+  if (email === "" || password === "") {
+    alert("All fields are required!");
+    return;
+  }
+
+  try {
+    const response = await fetch("http://localhost:3030/users/login", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert("Invalid credentials!");
+      loginForm.reset();
+      return;
     }
 
-    const data = await login({ email, password });
-    setUserData(data);
-    updateNav();
-    showHomeView();
+    sessionStorage.setItem("accessToken", data.accessToken);
+    sessionStorage.setItem("userId", data._id);
+    sessionStorage.setItem("userEmail", data.email);
+
+    showHome();
+    loginForm.reset();
+  } catch (error) {
+    alert(error.message);
+  }
 }

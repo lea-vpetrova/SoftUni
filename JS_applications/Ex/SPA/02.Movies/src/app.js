@@ -1,53 +1,65 @@
-import { showRegisterView } from "./register.js";
-import { showHomeView } from "./home.js"; 
-import { getUserData } from "./userHelper.js";
+import { getAllMovies } from "./catalog.js";
+import { showCreateMovie } from "./create.js";
+import { showSection } from "./dom.js";
 import { showLogin } from "./login.js";
-import { showLogout } from "./logout.js";
+import { logout } from "./logout.js";
+import { showRegister } from "./register.js";
 
-document.querySelectorAll("section").forEach(section => section.style.display = 'none');
-document.querySelector("nav").addEventListener("click", onNavigate);
-const userMSG = document.getElementById("welcome-msg");
-const userNav = document.querySelectorAll("li.user");
-const guestNav = document.querySelectorAll("li.guest");
+window.addEventListener("load", showHome);
 
+const nav = document.querySelector("nav");
+const sections = document.querySelectorAll(".view-section");
 
-const routes = {
-    "/home": showHomeView,
-    "/register": showRegisterView,
-    "/login": showLogin,
-    "/logout": showLogout
+export function showHome() {
+  showNavigation();
+  showSection(sections[0]);
+  document
+    .querySelector("#add-movie-button a")
+    .addEventListener("click", showCreateMovie);
+  getAllMovies();
 }
 
-function onNavigate(e) {
-    if (e.target.tagName !== "A || !e.target.href") {
-        return;
-    }
-    e.preventDefault();
-    const url = new URL(e.terget.href);
-    const path = url.pathname;
-    routes[path]();
+export function showNavigation() {
+  if (!sessionStorage.getItem("accessToken")) {
+    [...nav.querySelectorAll(".user")].map((el) => {
+      el.style.display = "none";
+    });
+    [...nav.querySelectorAll(".guest")].map((el) => {
+      el.style.display = "block";
+    });
+    sections[0].querySelector("section#add-movie-button").style.display =
+      "none";
+  } else {
+    const email = sessionStorage.getItem("userEmail");
+    nav.querySelector("#welcome-msg").textContent = `Welcome, ${email}`;
+
+    [...nav.querySelectorAll(".user")].map((el) => {
+      el.style.display = "block";
+    });
+    [...nav.querySelectorAll(".guest")].map((el) => {
+      el.style.display = "none";
+    });
+    sections[0].querySelector("section#add-movie-button").style.display =
+      "block";
+  }
 }
 
-export function updateNav(){
-    const userData = getUserData();
-    if (userData) {
-        userNav.forEach(li => {
-            li.style.display = "block"
-        });
-        guestNav.forEach((li) => {
-            li.style.display = "none";
-        });
-        userMSG.textContent = `Welcome, ${userData.email}`;
-    }
-    else{
-        userNav.forEach((li) => {
-            li.style.display = "none";
-        });
-        guestNav.forEach((li) => {
-            li.style.display = "block";
-        });
-        userMSG.textContent = "";
-    }
-}
+const anchorTags = {
+  homeLink: showHome,
+  logoutLink: logout,
+  loginLink: showLogin,
+  registerLink: showRegister,
+};
+navLinks();
 
-updateNav();
+function navLinks() {
+  nav.addEventListener("click", (e) => {
+    if (e.target.tagName === "A") {
+      const view = anchorTags[e.target.id];
+      if (typeof view === "function") {
+        e.preventDefault();
+        view();
+      }
+    }
+  });
+}
