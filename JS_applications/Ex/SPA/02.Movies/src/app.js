@@ -1,15 +1,21 @@
 import { showRegisterView } from "./register.js";
 import { showHomeView } from "./home.js"; 
 import { getUserData } from "./userHelper.js";
+import { showLogin } from "./login.js";
+import { showLogout } from "./logout.js";
 
 document.querySelectorAll("section").forEach(section => section.style.display = 'none');
+document.querySelector("nav").addEventListener("click", onNavigate);
+const userMSG = document.getElementById("welcome-msg");
 const userNav = document.querySelectorAll("li.user");
 const guestNav = document.querySelectorAll("li.guest");
-document.querySelector("nav").addEventListener("click", onNavigate);
+
 
 const routes = {
+    "/home": showHomeView,
     "/register": showRegisterView,
-    "/home": showHomeView
+    "/login": showLogin,
+    "/logout": showLogout
 }
 
 function onNavigate(e) {
@@ -31,6 +37,7 @@ export function updateNav(){
         guestNav.forEach((li) => {
             li.style.display = "none";
         });
+        userMSG.textContent = `Welcome, ${userData.email}`;
     }
     else{
         userNav.forEach((li) => {
@@ -39,6 +46,7 @@ export function updateNav(){
         guestNav.forEach((li) => {
             li.style.display = "block";
         });
+        userMSG.textContent = "";
     }
 }
 
