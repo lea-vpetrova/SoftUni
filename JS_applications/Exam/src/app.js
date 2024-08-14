@@ -45,6 +45,6 @@ function updateNavigation() {
 
 async function onLogout() {
   await logout();
+  page.redirect("/");
   updateNavigation();
-  page.redirect("/dashboard");
 }

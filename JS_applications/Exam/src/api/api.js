@@ -1,4 +1,4 @@
-const host = "http://localhost:3030/";
+const host = "http://localhost:3030/admin/";
 
 async function requester(method, url, data) {
   const user = JSON.parse(sessionStorage.getItem("user"));

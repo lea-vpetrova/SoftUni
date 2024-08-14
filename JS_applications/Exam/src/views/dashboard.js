@@ -26,4 +26,5 @@ export async function showDashboard(context) {
   ctx = context;
   const data = await getAllItems();
   ctx.render(dashboardTemplate(data));
+  ctx.updateNavigation();
 }
